@@ -1,0 +1,47 @@
+@theme {
+  /* Background colors */
+  --color-background: #faf6f0;
+  --color-surface: #ffffff;
+
+  /* Text colors */
+  --color-foreground: #35251d;
+  --color-text-muted: #705f53;
+
+  /* Brand colors */
+  --color-primary: #8b3f42;
+  --color-primary-hover: #703235;
+
+  --color-primary-soft: #f3e8e5;
+  --color-cream: #f8f1e8;
+  --color-surface-hover: #fdfaf6;
+
+  /* Status colors */
+  --color-success: #2e7d32;
+  --color-error: #c62828;
+  --color-warning: #b45309;
+  --color-info: #2563a6;
+
+  /* Additional Flora Cafe colors */
+  --color-primary-light: #a85c5e;
+  --color-botanical: #79956d;
+  --color-blush: #f5e7e5;
+  --color-coffee: #55443d;
+
+  /* Border colors */
+  --color-border: #e5d8c8;
+  --color-border-muted: #d6c8b8;
+
+  /* Additional design tokens */
+  --radius-card: 1rem;
+  --radius-button: 9999px;
+
+  --shadow-card: 0 2px 12px rgba(53, 37, 29, 0.05);
+
+  /* Typography */
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+
+  --font-flowmery: "Flowmery", cursive;
+  --font-homemade-apple: "Homemade Apple", cursive;
+}

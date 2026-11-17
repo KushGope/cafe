@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Homemade+Apple&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+@import "tailwindcss";
+@import "./theme.css";
+
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+@font-face {
+  font-family: "Flowmery";
+  src: url("/fonts/flowmery-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.flowmery-font {
+  font-family: "Flowmery", cursive;
+}
+.homemade-apple-regular {
+  font-family: "Homemade Apple", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
