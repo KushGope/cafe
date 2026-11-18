@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import cafeLogo from "../../assets/images/Floracafe.png";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,10 +55,8 @@ const Navbar = () => {
   return (
     <div className="bg-background text-foreground">
       <nav className="sticky top-0 z-50 w-full border-b border-[#eadbd5] bg-[#fffaf5]/95 shadow-[0_4px_20px_rgba(183,110,121,0.10)] backdrop-blur-xl">
-
         {/* NAVBAR MAIN */}
         <div className="flex h-20 w-full items-center px-3 sm:h-24 sm:px-6">
-
           {/* LOGO ICON */}
           <Link
             to="/"
@@ -66,7 +64,7 @@ const Navbar = () => {
             className="flex shrink-0 items-center"
           >
             <img
-              src="/icons/Floracafe.png"
+              src={cafeLogo}
               alt="Flora Cafe Logo"
               className="h-14 w-14 object-contain transition duration-500 hover:rotate-6 hover:scale-110 sm:h-20 sm:w-20"
             />
@@ -114,7 +112,6 @@ const Navbar = () => {
 
           {/* LOGIN / LOGOUT + MOBILE MENU BUTTON */}
           <div className="ml-auto flex shrink-0 items-center gap-4 md:ml-6">
-
             {/* LOGIN / LOGOUT ICON */}
             {isLoggedIn ? (
               <button
@@ -156,7 +153,6 @@ const Navbar = () => {
         {/* MOBILE NAVIGATION */}
         {menuOpen && (
           <div className="flex flex-col gap-1 border-t border-[#eadbd5] bg-[#fffaf5] px-4 py-3 shadow-lg md:hidden">
-
             {navLinks.map((link) => (
               <Link
                 key={link.name}

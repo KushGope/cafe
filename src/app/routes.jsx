@@ -24,6 +24,7 @@ import Order from "../features/orders/Order";
 
 // Admin pages
 import Admin from "../admin/Admin";
+import AuthLayout from "../auth/AuthLayout";
 
 const AppRoutes = () => {
   return (
@@ -34,9 +35,14 @@ const AppRoutes = () => {
         {/* ADMIN LOGIN - ALWAYS ACCESSIBLE */}
         <Route path="/adminlogin" element={<Adminlogin />} />
 
-        {/* CUSTOMER AUTHENTICATION */}
-        <Route path="/login" element={<Userlogin />} />
-        <Route path="/signup" element={<UserSignup />} />
+        {/* ADMIN LOGIN - NO CUSTOMER NAVBAR */}
+        <Route path="/adminlogin" element={<Adminlogin />} />
+
+        {/* CUSTOMER AUTHENTICATION - WITH NAVBAR */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Userlogin />} />
+          <Route path="/signup" element={<UserSignup />} />
+        </Route>
 
         {/* ================= PUBLIC ROUTES ================= */}
         <Route element={<HomeGate />}>

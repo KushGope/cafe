@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthLayout from "./AuthLayout";
+import AuthLayout from "./AuthFormLayout";
 import { fetchClient } from "../../api/fetchClient";
 import { API_ENDPOINTS } from "../../api/endpoints";
 
