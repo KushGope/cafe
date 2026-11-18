@@ -11,6 +11,6 @@ export const getAllOrders = async () => {
 export const updateOrderStatus = async (orderId, status) => {
   return await fetchClient(`/admin/orders/${orderId}/status`, {
     method: "PATCH",
-    body: JSON.stringify({ status }),
+    body: { status },
   });
 };
