@@ -31,6 +31,13 @@ const AppRoutes = () => {
       <ScrollToTop />
 
       <Routes>
+        {/* ADMIN LOGIN - ALWAYS ACCESSIBLE */}
+        <Route path="/adminlogin" element={<Adminlogin />} />
+
+        {/* CUSTOMER AUTHENTICATION */}
+        <Route path="/login" element={<Userlogin />} />
+        <Route path="/signup" element={<UserSignup />} />
+
         {/* ================= PUBLIC ROUTES ================= */}
         <Route element={<HomeGate />}>
           <Route path="/" element={<Hero />} />
@@ -38,11 +45,6 @@ const AppRoutes = () => {
           <Route path="/menu" element={<Menu />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-
-          {/* Authentication */}
-          <Route path="/login" element={<Userlogin />} />
-          <Route path="/signup" element={<UserSignup />} />
-          <Route path="/adminlogin" element={<Adminlogin />} />
 
           {/* Customer pages - backend handles authorization */}
           <Route path="/cart" element={<Cart />} />

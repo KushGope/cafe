@@ -70,13 +70,27 @@ export async function fetchClient(endpoint, options = {}) {
       : await response.text();
 
     // Handle HTTP errors
+
     if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("floraUserLoggedIn");
-        window.dispatchEvent(new Event("flora-auth-change"));
+      const isInvalidToken =
+        response.status === 401 ||
+        (response.status === 403 &&
+          ["INVALID_TOKEN", "TOKEN_EXPIRED", "INVALID_JWT"].includes(
+            data?.code,
+          ));
+
+      if (isInvalidToken) {
+        const currentToken = localStorage.getItem("token");
+
+        if (currentToken) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("floraUserLoggedIn");
+
+          window.dispatchEvent(new Event("flora-auth-change"));
+        }
       }
+
       const message =
         typeof data === "string"
           ? data || `Request failed (${response.status})`

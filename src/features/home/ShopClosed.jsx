@@ -234,14 +234,14 @@ function ShopClosed() {
               </div>
 
               {/* INFORMATION MESSAGE */}
-              <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-xl bg-cream p-4 text-left">
+              {/* <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-xl bg-cream p-4 text-left">
                 <FaClock className="mt-1 shrink-0 text-primary" />
 
                 <p className="text-xs leading-6 text-text-muted sm:text-sm">
                   Please check back with us soon for updates. We look forward to
                   serving you again!
                 </p>
-              </div>
+              </div> */}
 
               {/* BACK HOME BUTTON */}
               <div className="mt-10">
@@ -260,7 +260,15 @@ function ShopClosed() {
 
                 <p className="flex items-center justify-center gap-2 text-sm text-text-muted">
                   Made with
-                  <FaHeart className="animate-pulse text-primary" />
+                  {/* <FaHeart className="animate-pulse text-primary" /> */}
+                  <Link
+                    to="/adminlogin"
+                    className="inline-flex cursor-pointer"
+                    aria-label="Admin login"
+                    // title="Admin login"
+                  >
+                    <FaHeart className="animate-pulse text-primary transition-transform duration-300 hover:scale-125" />
+                  </Link>
                   and coffee.
                 </p>
 
