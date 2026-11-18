@@ -105,7 +105,7 @@ function AdminLogin() {
               to="/"
               className="text-sm text-primary transition hover:text-foreground"
             >
-              ← Back to Website
+              Back to Website
             </Link>
 
             <h2 className="mt-8 text-3xl font-bold text-foreground">

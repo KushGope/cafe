@@ -1,6 +1,41 @@
+import { useNavigate } from "react-router-dom";
 import { menuItems } from "../data/adminData";
 
 const Sidebar = ({ activeTab, changeTab, sidebarOpen, setSidebarOpen }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to logout from Flora Cafe Admin?",
+    );
+
+    if (!confirmed) return;
+
+    // Clear authentication data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("floraUserLoggedIn");
+
+    // Notify authentication changes
+    window.dispatchEvent(new Event("flora-auth-change"));
+
+    // Close sidebar
+    setSidebarOpen(false);
+
+    // Redirect to admin login
+    navigate("/adminlogin", { replace: true });
+  };
+
+  const handleNavigation = (item) => {
+    if (item.type === "logout") {
+      handleLogout();
+      return;
+    }
+
+    changeTab(item.name);
+    setSidebarOpen(false);
+  };
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -27,7 +62,6 @@ const Sidebar = ({ activeTab, changeTab, sidebarOpen, setSidebarOpen }) => {
             <p className="mt-1 text-sm text-white/50">Admin Dashboard</p>
           </div>
 
-          {/* Close Button */}
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Close sidebar"
@@ -40,35 +74,30 @@ const Sidebar = ({ activeTab, changeTab, sidebarOpen, setSidebarOpen }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-2">
-          {menuItems.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => changeTab(item.name)}
-              className={`flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition-all
-              ${
-                activeTab === item.name
-                  ? "bg-background text-foreground shadow-lg"
-                  : "text-white/70 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              <span className="text-xl">{item.icon}</span>
+        <nav className="flex flex-1 flex-col gap-2">
+          {menuItems.map((item) => {
+            const isLogout = item.type === "logout";
 
-              <span className="font-medium">{item.name}</span>
-            </button>
-          ))}
+            return (
+              <button
+                key={item.name}
+                onClick={() => handleNavigation(item)}
+                className={`flex w-full items-center gap-4 rounded-xl px-4 py-3
+                text-left transition-all
+                ${
+                  isLogout
+                    ? "border-t border-white/10 text-red-300 hover:bg-red-500 hover:text-white"
+                    : activeTab === item.name
+                      ? "bg-background text-foreground shadow-lg"
+                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                <span className="text-xl">{item.icon}</span>
+                <span className="font-medium">{item.name}</span>
+              </button>
+            );
+          })}
         </nav>
-
-        {/* Logout */}
-        <button
-          onClick={() => {
-            // Add logout functionality here
-          }}
-          className="mt-8 rounded-xl bg-white/10 px-4 py-3
-          text-left transition hover:bg-white/20"
-        >
-          ↪ Logout
-        </button>
       </aside>
     </>
   );

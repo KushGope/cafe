@@ -5,11 +5,11 @@ export const menuItems = [
   { name: "Categories", icon: "▤" },
   { name: "Customers", icon: "♙" },
   { name: "Analytics", icon: "▥" },
-  { name: "Settings", icon: "⚙" },
   {
     name: "Shop Management",
-    icon: "🔒",
-  },
+    icon: "⚙",
+  }, // Logout
+  { name: "Logout", icon: "🔒", type: "logout" },
 ];
 
 export const stats = [
