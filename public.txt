@@ -1,9 +1,0 @@
-Folder PATH listing
-Volume serial number is 72F1-0858
-C:\USERS\KUSHG\ONEDRIVE\DOCUMENTS\FLORACAFE\PUBLIC
-+---fonts
-¦       flowmery-Regular.ttf
-¦       
-+---icons
-        Floracafe.png
-        
