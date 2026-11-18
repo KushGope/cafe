@@ -7,12 +7,86 @@ import { API_BASE_URL } from "./endpoints";
 // const API_BASE_URL = "/api";
 // const API_BASE_URL = "http://localhost:8080/api";
 
-/**
- * Modular fetch client for Spring Boot backend
- * @param {string} endpoint - API endpoint (e.g., '/orders')
- * @param {Object} options - Fetch options (method, body, headers, etc.)
- * @returns {Promise<any>}
- */
+// JWT errors returned by the backend
+const INVALID_TOKEN_CODES = [
+  "INVALID_TOKEN",
+  "TOKEN_EXPIRED",
+  "INVALID_JWT",
+  "JWT_EXPIRED",
+  "MALFORMED_TOKEN",
+];
+
+const clearAuth = () => {
+  const hadAuth = Boolean(localStorage.getItem("token"));
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("floraUserLoggedIn");
+
+  if (hadAuth) {
+    window.dispatchEvent(new Event("flora-auth-change"));
+  }
+};
+
+// Parse response safely
+async function parseResponse(response) {
+  if (response.status === 204 || response.status === 205) {
+    return null;
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    try {
+      return await response.json();
+    } catch {
+      return null;
+    }
+  }
+
+  return await response.text();
+}
+
+// User-friendly error messages
+function getErrorMessage(status, data) {
+  if (data && typeof data === "object" && data.message) {
+    return data.message;
+  }
+
+  switch (status) {
+    case 400:
+      return "Invalid request. Please check your input.";
+
+    case 401:
+      return "Your session has expired. Please log in again.";
+
+    case 403:
+      return "You don't have permission to perform this action.";
+
+    case 404:
+      return "The requested resource was not found.";
+
+    case 409:
+      return "This action conflicts with existing data.";
+
+    case 422:
+      return "Unable to process your request.";
+
+    case 429:
+      return "Too many requests. Please try again later.";
+
+    case 500:
+      return "Something went wrong on the server.";
+
+    case 502:
+    case 503:
+    case 504:
+      return "Server is temporarily unavailable. Please try again.";
+
+    default:
+      return `Request failed (${status}).`;
+  }
+}
 
 export async function fetchClient(endpoint, options = {}) {
   const {
@@ -20,26 +94,29 @@ export async function fetchClient(endpoint, options = {}) {
     body,
     headers = {},
     signal,
+    auth = true,
     ...fetchOptions
   } = options;
 
   const requestHeaders = new Headers(headers);
 
-  //  customer JWT authentication
-  const token = localStorage.getItem("token");
+  // Attach JWT only when authentication is enabled
+  if (auth) {
+    const token = localStorage.getItem("token");
 
-  if (token && !requestHeaders.has("Authorization")) {
-    requestHeaders.set("Authorization", `Bearer ${token}`);
+    if (token && !requestHeaders.has("Authorization")) {
+      requestHeaders.set("Authorization", `Bearer ${token}`);
+    }
+  } else {
+    requestHeaders.delete("Authorization");
   }
 
   let requestBody;
 
-  // Attach body if present and serialize to JSON
   if (body !== undefined && body !== null) {
-    if (body instanceof FormData) {
+    if (body instanceof FormData || body instanceof Blob) {
       requestBody = body;
-      // Browser automatically sets multipart boundary.
-    } else if (typeof body === "string" || body instanceof Blob) {
+    } else if (typeof body === "string") {
       requestBody = body;
     } else {
       requestHeaders.set("Content-Type", "application/json");
@@ -48,8 +125,12 @@ export async function fetchClient(endpoint, options = {}) {
   }
 
   const url = `${API_BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+
+  let response;
+  let data;
+
   try {
-    const response = await fetch(url, {
+    response = await fetch(url, {
       ...fetchOptions,
       method,
       headers: requestHeaders,
@@ -57,54 +138,56 @@ export async function fetchClient(endpoint, options = {}) {
       signal,
     });
 
-    // Handle empty response
-    if (response.status === 204 || response.status === 205) {
-      return null;
-    }
-
-    // Automatically parse JSON if the response contains it, otherwise return text
-    // Parse response
-    const contentType = response.headers.get("content-type") || "";
-    const data = contentType?.includes("application/json")
-      ? await response.json()
-      : await response.text();
-
-    // Handle HTTP errors
-
-    if (!response.ok) {
-      const isInvalidToken =
-        response.status === 401 ||
-        (response.status === 403 &&
-          ["INVALID_TOKEN", "TOKEN_EXPIRED", "INVALID_JWT"].includes(
-            data?.code,
-          ));
-
-      if (isInvalidToken) {
-        const currentToken = localStorage.getItem("token");
-
-        if (currentToken) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          localStorage.removeItem("floraUserLoggedIn");
-
-          window.dispatchEvent(new Event("flora-auth-change"));
-        }
-      }
-
-      const message =
-        typeof data === "string"
-          ? data || `Request failed (${response.status})`
-          : data?.message || `Request failed (${response.status})`;
-
-      const error = new Error(message);
-      error.status = response.status;
-      error.data = data;
-
+    data = await parseResponse(response);
+  } catch (error) {
+    // Do not treat aborted requests as API failures
+    if (error.name === "AbortError") {
       throw error;
     }
-    return data;
-  } catch (error) {
-    console.error(`API Error [${method} ${endpoint}]:`, error.message);
+
+    const networkError = new Error(
+      "Unable to connect to the server. Please check your internet connection.",
+    );
+
+    networkError.name = "NetworkError";
+    networkError.cause = error;
+
+    console.error(`Network Error [${method} ${endpoint}]:`, error.message);
+
+    throw networkError;
+  }
+
+  // Handle HTTP errors
+  if (!response.ok) {
+    const code = typeof data === "object" && data !== null ? data.code : null;
+
+    const isInvalidToken =
+      response.status === 401 ||
+      (response.status === 403 && INVALID_TOKEN_CODES.includes(code));
+
+    // Clear authentication only for actual authentication failures
+    if (isInvalidToken && auth) {
+      clearAuth();
+    }
+
+    const error = new Error(getErrorMessage(response.status, data));
+
+    error.name = "ApiError";
+    error.status = response.status;
+    error.code = code;
+    error.data = data;
+    error.endpoint = endpoint;
+    error.method = method;
+
+    console.error(`API Error [${method} ${endpoint}]:`, {
+      status: response.status,
+      code,
+      message: error.message,
+      data,
+    });
+
     throw error;
   }
+
+  return data;
 }
