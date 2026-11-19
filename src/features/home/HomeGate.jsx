@@ -13,7 +13,9 @@ function HomeGate() {
     try {
       setError(false);
 
-      const data = await fetchClient("/shop/status");
+      const data = await fetchClient("/shop/status", {
+        auth: false,
+      });
 
       if (typeof data.open !== "boolean") {
         throw new Error("Invalid shop status response");

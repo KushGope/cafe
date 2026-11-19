@@ -2,18 +2,38 @@
   /* Background colors */
   --color-background: #faf6f0;
   --color-surface: #ffffff;
+  --color-surface-soft: #f8eee9;
+  --color-surface-muted: #fdfaf6;
+  --color-footer: #fffaf5;
+  --color-footer-bottom: #fff5f1;
 
   /* Text colors */
   --color-foreground: #35251d;
-  --color-text-muted: #705f53;
+  --color-text-muted: #89776e;
+  --color-text-secondary: #705f53;
+  --color-coffee: #55443d;
 
-  /* Brand colors */
+  /* Primary brand colors */
   --color-primary: #8b3f42;
   --color-primary-hover: #703235;
+  --color-primary-light: #b76e79;
+  --color-primary-soft: #f8e8eb;
 
-  --color-primary-soft: #f3e8e5;
-  --color-cream: #f8f1e8;
-  --color-surface-hover: #fdfaf6;
+  /* Botanical colors */
+  --color-botanical: #79956d;
+  --color-botanical-soft: #eaf0e5;
+  --color-botanical-light: #c8d7bd;
+
+  /* Blush and decorative colors */
+  --color-blush: #f5e7e5;
+  --color-blush-soft: #fce4ec;
+  --color-blush-light: #e8b8c1;
+
+  /* Border colors */
+  --color-border: #e5d8c8;
+  --color-border-muted: #ead8d4;
+  --color-border-soft: #f0dfe0;
+  --color-border-botanical: #e1eadc;
 
   /* Status colors */
   --color-success: #2e7d32;
@@ -21,20 +41,11 @@
   --color-warning: #b45309;
   --color-info: #2563a6;
 
-  /* Additional Flora Cafe colors */
-  --color-primary-light: #a85c5e;
-  --color-botanical: #79956d;
-  --color-blush: #f5e7e5;
-  --color-coffee: #55443d;
-
-  /* Border colors */
-  --color-border: #e5d8c8;
-  --color-border-muted: #d6c8b8;
-
-  /* Additional design tokens */
+  /* Radius */
   --radius-card: 1rem;
   --radius-button: 9999px;
 
+  /* Shadows */
   --shadow-card: 0 2px 12px rgba(53, 37, 29, 0.05);
 
   /* Typography */
@@ -45,6 +56,7 @@
   --font-flowmery: "Flowmery", cursive;
   --font-homemade-apple: "Homemade Apple", cursive;
 }
+
 @font-face {
   font-family: "Flowmery";
   src: url("/fonts/flowmery-Regular.ttf") format("truetype");
