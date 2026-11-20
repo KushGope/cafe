@@ -35,8 +35,18 @@ function HomeGate() {
   // LOADING
   if (shopOpen === null && !error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#fffaf5]">
-        <p className="animate-pulse text-[#b76e79]">Loading Flora Cafe...</p>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-blush border-t-primary-light" />
+
+          <p className="animate-pulse font-medium tracking-wide text-primary-light">
+            Loading Flora Cafe...
+          </p>
+
+          <p className="text-xs tracking-[2px] text-text-muted">
+            COFFEE. COMFORT. CALM.
+          </p>
+        </div>
       </div>
     );
   }
@@ -44,15 +54,34 @@ function HomeGate() {
   // API ERROR
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-        <p>Unable to load Flora Cafe.</p>
+      <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-6">
+        <div className="rounded-3xl border border-border-muted bg-surface p-8 text-center shadow-card sm:p-10">
+          <div className="mb-5 flex justify-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-soft text-3xl text-primary-light">
+              !
+            </div>
+          </div>
 
-        <button
-          onClick={checkShopStatus}
-          className="rounded-lg bg-rose-500 px-5 py-2 text-white"
-        >
-          Retry
-        </button>
+          <h2 className="font-['Homemade_Apple'] text-2xl text-primary sm:text-3xl">
+            Oops! Something went wrong
+          </h2>
+
+          <p className="mt-3 max-w-sm text-sm leading-6 text-text-muted">
+            We couldn't connect to Flora Cafe right now. Please try again in a
+            moment.
+          </p>
+
+          <button
+            onClick={checkShopStatus}
+            className="mt-7 rounded-button bg-primary px-7 py-3 font-medium text-white shadow-card transition duration-300 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg active:scale-95"
+          >
+            Retry Connection
+          </button>
+
+          <p className="mt-6 text-[10px] tracking-[3px] text-botanical">
+            FLORA CAFE
+          </p>
+        </div>
       </div>
     );
   }

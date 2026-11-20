@@ -1,5 +1,6 @@
 // Base API URL
 import { API_BASE_URL } from "./endpoints";
+import { isTokenExpired } from "./jwtUtils";
 
 // const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 // const API_BASE_URL = "https://cafe-udmy.onrender.com/api";
@@ -30,9 +31,7 @@ const clearAuth = () => {
 
 // Parse response safely
 async function parseResponse(response) {
-  if (response.status === 204 || response.status === 205) {
-    return null;
-  }
+  if ([204, 205].includes(response.status)) return null;
 
   const contentType = response.headers.get("content-type") || "";
 
@@ -44,7 +43,7 @@ async function parseResponse(response) {
     }
   }
 
-  return await response.text();
+  return response.text();
 }
 
 // User-friendly error messages
@@ -53,39 +52,20 @@ function getErrorMessage(status, data) {
     return data.message;
   }
 
-  switch (status) {
-    case 400:
-      return "Invalid request. Please check your input.";
-
-    case 401:
-      return "Your session has expired. Please log in again.";
-
-    case 403:
-      return "You don't have permission to perform this action.";
-
-    case 404:
-      return "The requested resource was not found.";
-
-    case 409:
-      return "This action conflicts with existing data.";
-
-    case 422:
-      return "Unable to process your request.";
-
-    case 429:
-      return "Too many requests. Please try again later.";
-
-    case 500:
-      return "Something went wrong on the server.";
-
-    case 502:
-    case 503:
-    case 504:
-      return "Server is temporarily unavailable. Please try again.";
-
-    default:
-      return `Request failed (${status}).`;
-  }
+  const messages = {
+    400: "Invalid request. Please check your input.",
+    401: "Your session has expired. Please log in again.",
+    403: "You don't have permission to perform this action.",
+    404: "The requested resource was not found.",
+    409: "This action conflicts with existing data.",
+    422: "Unable to process your request.",
+    429: "Too many requests. Please try again later.",
+    500: "Something went wrong on the server.",
+    502: "Server is temporarily unavailable. Please try again.",
+    503: "Server is temporarily unavailable. Please try again.",
+    504: "Server is temporarily unavailable. Please try again.",
+  };
+  return messages[status] || `Request failed (${status}).`;
 }
 
 export async function fetchClient(endpoint, options = {}) {
@@ -104,6 +84,20 @@ export async function fetchClient(endpoint, options = {}) {
   if (auth) {
     const token = localStorage.getItem("token");
 
+    if (token && isTokenExpired(token)) {
+      clearAuth();
+
+      const error = new Error("Your session has expired. Please log in again.");
+
+      error.name = "ApiError";
+      error.status = 401;
+      error.code = "TOKEN_EXPIRED";
+      error.endpoint = endpoint;
+      error.method = method;
+
+      throw error;
+    }
+
     if (token && !requestHeaders.has("Authorization")) {
       requestHeaders.set("Authorization", `Bearer ${token}`);
     }
@@ -113,15 +107,15 @@ export async function fetchClient(endpoint, options = {}) {
 
   let requestBody;
 
-  if (body !== undefined && body !== null) {
-    if (body instanceof FormData || body instanceof Blob) {
-      requestBody = body;
-    } else if (typeof body === "string") {
-      requestBody = body;
-    } else {
-      requestHeaders.set("Content-Type", "application/json");
-      requestBody = JSON.stringify(body);
-    }
+  if (
+    body instanceof FormData ||
+    body instanceof Blob ||
+    typeof body === "string"
+  ) {
+    requestBody = body;
+  } else if (body != null) {
+    requestHeaders.set("Content-Type", "application/json");
+    requestBody = JSON.stringify(body);
   }
 
   const url = `${API_BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
@@ -141,9 +135,7 @@ export async function fetchClient(endpoint, options = {}) {
     data = await parseResponse(response);
   } catch (error) {
     // Do not treat aborted requests as API failures
-    if (error.name === "AbortError") {
-      throw error;
-    }
+    if (error.name === "AbortError") throw error;
 
     const networkError = new Error(
       "Unable to connect to the server. Please check your internet connection.",
@@ -159,25 +151,25 @@ export async function fetchClient(endpoint, options = {}) {
 
   // Handle HTTP errors
   if (!response.ok) {
-    const code = typeof data === "object" && data !== null ? data.code : null;
+    const code = data?.code ?? null;
 
     const isInvalidToken =
-      response.status === 401 ||
-      (response.status === 403 && INVALID_TOKEN_CODES.includes(code));
+      response.status === 401 || INVALID_TOKEN_CODES.includes(code);
 
-    // Clear authentication only for actual authentication failures
-    if (isInvalidToken && auth) {
+    if (auth && isInvalidToken) {
       clearAuth();
     }
 
     const error = new Error(getErrorMessage(response.status, data));
 
-    error.name = "ApiError";
-    error.status = response.status;
-    error.code = code;
-    error.data = data;
-    error.endpoint = endpoint;
-    error.method = method;
+    Object.assign(error, {
+      name: "ApiError",
+      status: response.status,
+      code,
+      data,
+      endpoint,
+      method,
+    });
 
     console.error(`API Error [${method} ${endpoint}]:`, {
       status: response.status,

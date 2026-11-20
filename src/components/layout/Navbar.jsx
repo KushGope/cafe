@@ -54,7 +54,7 @@ const Navbar = () => {
 
   return (
     <div className="bg-background text-foreground">
-      <nav className="sticky top-0 z-50 w-full border-b border-[#eadbd5] bg-[#fffaf5]/95 shadow-[0_4px_20px_rgba(183,110,121,0.10)] backdrop-blur-xl">
+      <nav className="sticky top-0 z-50 w-full border-b border-border-muted bg-footer/95 shadow-[0_4px_20px_rgba(183,110,121,0.10)] backdrop-blur-xl">
         {/* NAVBAR MAIN */}
         <div className="flex h-20 w-full items-center px-3 sm:h-24 sm:px-6">
           {/* LOGO ICON */}
@@ -70,14 +70,14 @@ const Navbar = () => {
             />
           </Link>
 
-          {/* FLORA CAFE CURSIVE BRAND NAME */}
+          {/* FLORA CAFE BRAND NAME */}
           <Link
             to="/"
             onClick={closeMenu}
             className="group ml-1 shrink-0 sm:ml-3"
           >
             <h1
-              className="whitespace-nowrap font-['Homemade_Apple'] text-xl tracking-wide text-[#b76e79] transition duration-500 sm:text-2xl md:text-3xl"
+              className="whitespace-nowrap font-['Homemade_Apple'] text-xl tracking-wide text-primary-light transition duration-500 sm:text-2xl md:text-3xl"
               style={{
                 textShadow:
                   "0 0 5px rgba(183,110,121,0.45), 0 0 12px rgba(183,110,121,0.30), 0 0 22px rgba(232,184,193,0.55)",
@@ -85,7 +85,7 @@ const Navbar = () => {
             >
               Flora Cafe
             </h1>
-            <p className="mt-1 hidden text-center text-[8px] font-medium tracking-[3px] text-[#79956d] sm:block">
+            <p className="mt-1 hidden text-center text-[8px] font-medium tracking-[3px] text-botanical sm:block">
               COFFEE. COMFORT. CALM.
             </p>
           </Link>
@@ -96,7 +96,7 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.to}
-                className="relative whitespace-nowrap font-medium text-[#55443d] transition duration-300 hover:text-[#b76e79] after:absolute after:-bottom-2 after:left-0 after:h-[2px] after:w-0 after:rounded-full after:bg-[#b76e79] after:transition-all after:duration-300 hover:after:w-full"
+                className="relative whitespace-nowrap font-medium text-coffee transition duration-300 hover:text-primary-light after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-primary-light after:transition-all after:duration-300 hover:after:w-full"
               >
                 {link.name}
               </Link>
@@ -104,7 +104,7 @@ const Navbar = () => {
 
             <Link
               to="/cart"
-              className="whitespace-nowrap font-medium text-[#55443d] transition duration-300 hover:text-[#b76e79]"
+              className="whitespace-nowrap font-medium text-coffee transition duration-300 hover:text-primary-light"
             >
               Cart 🛒
             </Link>
@@ -119,7 +119,7 @@ const Navbar = () => {
                 onClick={handleLogout}
                 title="Logout"
                 aria-label="Logout"
-                className="flex items-center justify-center text-2xl text-[#b76e79] transition duration-300 hover:scale-110 hover:text-red-600 sm:text-3xl"
+                className="flex items-center justify-center text-2xl text-primary-light transition duration-300 hover:scale-110 hover:text-red-600 sm:text-3xl"
               >
                 <FaSignOutAlt />
               </button>
@@ -129,7 +129,7 @@ const Navbar = () => {
                 onClick={closeMenu}
                 title="Login"
                 aria-label="Login"
-                className="flex items-center justify-center text-2xl text-[#b76e79] transition duration-300 hover:scale-110 hover:text-[#79956d] sm:text-3xl"
+                className="flex items-center justify-center text-2xl text-primary-light transition duration-300 hover:scale-110 hover:text-botanical sm:text-3xl"
               >
                 <FaUserCircle />
               </Link>
@@ -139,7 +139,7 @@ const Navbar = () => {
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="rounded-xl p-2 text-[#b76e79] transition hover:bg-[#f8e8eb] md:hidden"
+              className="rounded-xl p-2 text-primary-light transition hover:bg-primary-soft md:hidden"
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
             >
@@ -152,13 +152,13 @@ const Navbar = () => {
 
         {/* MOBILE NAVIGATION */}
         {menuOpen && (
-          <div className="flex flex-col gap-1 border-t border-[#eadbd5] bg-[#fffaf5] px-4 py-3 shadow-lg md:hidden">
+          <div className="flex flex-col gap-1 border-t border-border-muted bg-footer px-4 py-3 shadow-lg md:hidden">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.to}
                 onClick={closeMenu}
-                className="rounded-xl px-4 py-3 font-medium text-[#55443d] transition hover:bg-[#f8e8eb] hover:text-[#b76e79]"
+                className="rounded-xl px-4 py-3 font-medium text-coffee transition hover:bg-primary-soft hover:text-primary-light"
               >
                 {link.name}
               </Link>
@@ -167,7 +167,7 @@ const Navbar = () => {
             <Link
               to="/cart"
               onClick={closeMenu}
-              className="rounded-xl px-4 py-3 font-medium text-[#55443d] transition hover:bg-[#f8e8eb] hover:text-[#b76e79]"
+              className="rounded-xl px-4 py-3 font-medium text-coffee transition hover:bg-primary-soft hover:text-primary-light"
             >
               Cart 🛒
             </Link>

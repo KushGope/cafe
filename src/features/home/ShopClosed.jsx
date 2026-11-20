@@ -123,18 +123,18 @@ function ShopClosed() {
       `}</style>
 
       {/* BACKGROUND DECORATION */}
-      <div className="pointer-events-none absolute -left-40 -top-32 h-[450px] w-[450px] rounded-full bg-primary/10 blur-[120px]" />
+      <div className="pointer-events-none absolute -left-40 -top-32 h-112.5 w-112.5 rounded-full bg-primary/10 blur-[120px]" />
 
-      <div className="pointer-events-none absolute -bottom-40 -right-32 h-[450px] w-[450px] rounded-full bg-[#c8d7bd]/30 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 -right-32 h-112.5 w-112.5 rounded-full bg-botanical-light/30 blur-[120px]" />
 
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#ead8c8]/30 blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-surface-soft/50 blur-[100px]" />
 
       {/* FLOATING LEAVES */}
-      <FaLeaf className="float-animation pointer-events-none absolute left-[7%] top-[12%] rotate-[-30deg] text-4xl text-[#79956d]/30 sm:text-6xl" />
+      <FaLeaf className="float-animation pointer-events-none absolute left-[7%] top-[12%] rotate-[-30deg] text-4xl text-botanical/30 sm:text-6xl" />
 
       <FaLeaf className="float-delay pointer-events-none absolute bottom-[12%] right-[7%] rotate-45 text-5xl text-primary/20 sm:text-7xl" />
 
-      <FaSeedling className="leaf-sway pointer-events-none absolute right-[12%] top-[15%] text-4xl text-[#79956d]/30 sm:text-5xl" />
+      <FaSeedling className="leaf-sway pointer-events-none absolute right-[12%] top-[15%] text-4xl text-botanical/30 sm:text-5xl" />
 
       <FaLeaf className="pointer-events-none absolute bottom-[25%] left-[12%] rotate-45 text-3xl text-primary/15" />
 
@@ -143,7 +143,7 @@ function ShopClosed() {
         {/* BRAND HEADER */}
         <header className="fade-up mb-9 text-center">
           <Link to="/" className="inline-flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/20 bg-white shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/20 bg-surface shadow-sm">
               <FaLeaf className="text-xl text-primary" />
             </div>
 
@@ -160,7 +160,7 @@ function ShopClosed() {
         </header>
 
         {/* CLOSED CARD */}
-        <section className="closed-glow fade-up fade-delay relative overflow-hidden rounded-[2rem] border border-border bg-surface/95 shadow-card backdrop-blur-xl sm:rounded-[2.5rem]">
+        <section className="closed-glow fade-up fade-delay relative overflow-hidden rounded-4xl border border-border bg-surface/95 shadow-card backdrop-blur-xl sm:rounded-[2.5rem]">
           {/* TOP DECORATIVE ACCENT */}
           <div className="h-1.5 w-full bg-linear-to-r from-primary/30 via-primary to-primary/30" />
 
@@ -168,17 +168,11 @@ function ShopClosed() {
             {/* DECORATIVE BACKGROUND */}
             <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
 
-            <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-[#c8d7bd]/20 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-botanical-light/20 blur-3xl" />
 
             <div className="relative z-10">
-              {/* STATUS BADGE
-              <div className="mb-10 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-primary sm:text-sm">
-                <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(139,63,66,0.5)]" />
-                Currently Unavailable
-              </div> */}
-
               {/* COFFEE ILLUSTRATION */}
-              <div className="relative mx-auto mb-10 flex h-36 w-36 items-center justify-center rounded-full border border-primary/10 bg-linear-to-br from-primary-soft to-cream shadow-[0_10px_35px_rgba(139,63,66,0.10)] sm:h-40 sm:w-40">
+              <div className="relative mx-auto mb-10 flex h-36 w-36 items-center justify-center rounded-full border border-primary/10 bg-linear-to-br from-primary-soft to-surface-soft shadow-[0_10px_35px_rgba(139,63,66,0.10)] sm:h-40 sm:w-40">
                 {/* STEAM */}
                 <div className="absolute -top-1 flex gap-3">
                   <span className="steam-line h-7 w-1.5 rounded-full bg-primary/40 blur-[2px]" />
@@ -192,7 +186,7 @@ function ShopClosed() {
 
                 <FaHeart className="absolute -right-1 top-5 animate-pulse text-xl text-primary/70" />
 
-                <FaLeaf className="absolute -bottom-1 -left-1 rotate-[-30deg] text-2xl text-[#79956d]" />
+                <FaLeaf className="absolute -bottom-1 -left-1 rotate-[-30deg] text-2xl text-botanical" />
               </div>
 
               {/* SMALL HEADING */}
@@ -232,16 +226,6 @@ function ShopClosed() {
                   </p>
                 </div>
               </div>
-
-              {/* INFORMATION MESSAGE */}
-              {/* <div className="mx-auto mt-8 flex max-w-md items-start gap-3 rounded-xl bg-cream p-4 text-left">
-                <FaClock className="mt-1 shrink-0 text-primary" />
-
-                <p className="text-xs leading-6 text-text-muted sm:text-sm">
-                  Please check back with us soon for updates. We look forward to
-                  serving you again!
-                </p>
-              </div> */}
 
               {/* BACK HOME BUTTON */}
               <div className="mt-10">

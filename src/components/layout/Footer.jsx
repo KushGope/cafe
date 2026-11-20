@@ -204,7 +204,7 @@ function Footer() {
             href="#home"
             className="font-semibold text-primary-light transition duration-300 hover:text-botanical"
           >
-            Back to Top ↑
+            Back to Top
           </a>
         </div>
       </div>
