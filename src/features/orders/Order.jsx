@@ -4,13 +4,15 @@ import { useLocation, Link } from "react-router-dom";
 import { getOrderStatus } from "../../utils/orderUtils";
 
 // API / Service
-import { getMyOrders } from "./orderService";
+import { getMyOrders, getOrderByToken } from "./orderService";
 
 // Components
 import OrderProgress from "./OrderProgress";
 import OrderStatus from "./OrderStatus";
 import OrderDetails from "./OrderDetails";
 import OrderInformation from "./OrderInformation";
+
+const REFRESH_INTERVAL = 60 * 1000; // 1 minute
 
 const statusStyles = {
   COMPLETED: "bg-success/10 text-success",
@@ -22,6 +24,11 @@ const statusStyles = {
 const Order = () => {
   const location = useLocation();
   // const navigate = useNavigate();
+  const guestToken = localStorage.getItem("guestOrderToken");
+  const [guestOrder, setGuestOrder] = useState(
+    location.state?.guestOrder || null,
+  );
+  const [guestOrderLoading, setGuestOrderLoading] = useState(false);
 
   const [order, setOrder] = useState(location.state?.order || null);
   const [pastOrders, setPastOrders] = useState([]);
@@ -32,6 +39,39 @@ const Order = () => {
   );
 
   const orderToken = order?.orderToken;
+
+  useEffect(() => {
+    if (storedUser?.id || !guestToken) return;
+
+    let ignore = false;
+
+    const fetchGuestOrder = async () => {
+      try {
+        setGuestOrderLoading(true);
+
+        const response = await getOrderByToken(guestToken);
+
+        if (!ignore) {
+          setGuestOrder(response);
+        }
+      } catch (error) {
+        console.error("Failed to load guest order:", error);
+      } finally {
+        if (!ignore) {
+          setGuestOrderLoading(false);
+        }
+      }
+    };
+
+    setGuestOrderLoading(true);
+    fetchGuestOrder();
+    const interval = setInterval(fetchGuestOrder, REFRESH_INTERVAL);
+
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+    };
+  }, [guestToken, storedUser?.id]);
 
   // 1. Fetch past orders for the logged-in user
   useEffect(() => {
@@ -44,6 +84,16 @@ const Order = () => {
         if (!ignore) {
           const sorted = [...data].sort((a, b) => b.id - a.id);
           setPastOrders(sorted);
+          // Update currently tracked order
+          setOrder((currentOrder) => {
+            if (!currentOrder) return currentOrder;
+
+            const updatedOrder = sorted.find(
+              (item) => item.id === currentOrder.id,
+            );
+
+            return updatedOrder || currentOrder;
+          });
         }
       } catch (err) {
         console.error("Failed to load past orders:", err);
@@ -57,8 +107,12 @@ const Order = () => {
     };
 
     fetchUserOrders();
+    // Automatically refresh every 3 minutes
+    const interval = setInterval(fetchUserOrders, REFRESH_INTERVAL);
+
     return () => {
       ignore = true;
+      clearInterval(interval);
     };
   }, [storedUser?.id]);
 
@@ -85,6 +139,63 @@ const Order = () => {
               : "Manage and track your cafe orders."}
           </p>
         </div>
+
+        {/* GUEST ORDER TRACKING */}
+        {!storedUser && (
+          <div className="mb-10">
+            <h2 className="mb-4 text-xl font-bold">Guest Order Status</h2>
+
+            <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm md:p-8">
+              {guestOrderLoading ? (
+                <p className="py-4 text-center text-text-muted">
+                  Loading your order status...
+                </p>
+              ) : guestOrder ? (
+                <>
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm text-text-muted">Order Token</p>
+
+                      <h3 className="mt-1 text-2xl font-bold">
+                        #{guestOrder.orderToken}
+                      </h3>
+                    </div>
+
+                    <span
+                      className={`rounded-full px-4 py-2 text-sm font-semibold ${
+                        statusStyles[guestOrder.status] ||
+                        "bg-primary/10 text-primary"
+                      }`}
+                    >
+                      {guestOrder.status}
+                    </span>
+                  </div>
+
+                  <div className="mt-6 border-t border-border pt-5">
+                    <p className="text-sm text-text-muted">Order Amount</p>
+
+                    <p className="mt-1 text-xl font-bold">
+                      ₹{Number(guestOrder.totalAmount || 0).toFixed(2)}
+                    </p>
+
+                    <p className="mt-3 text-sm text-text-muted">
+                      Placed on:{" "}
+                      {new Date(guestOrder.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                </>
+              ) : guestToken ? (
+                <p className="py-4 text-center text-text-muted">
+                  Unable to load your order status. Please try again.
+                </p>
+              ) : (
+                <p className="py-4 text-center text-text-muted">
+                  You haven't placed a guest order yet.
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* SECTION 1: ONGOING ORDER (Loaded directly from state) */}
         {order && (
